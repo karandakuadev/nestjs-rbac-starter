@@ -1,158 +1,87 @@
-# Role-Based Access Control (RBAC) in NestJS using MongoDB
+# 🛡️ NestJS RBAC Starter
 
-This template repository contains an implementation of Role-Based Access Control (RBAC) using NestJS, a progressive Node.js framework, and MongoDB, a NoSQL database.
+> **A robust, production-ready boilerplate for implementing scalable Role-Based Access Control (RBAC) with NestJS and MongoDB.**
 
-The RBAC system is designed to manage user permissions and roles efficiently within an application. The project is designed to help you quickly set up a secure backend with authentication and authorization.
+---
 
-## Getting Started
+## 🎯 Project Intent
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+Building a secure authentication and authorization system from scratch can be complex and time-consuming. This project was created to solve that problem by providing a clean, easily extensible foundation for handling user identities and permissions. The core motivation is to give developers a secure starting point for enterprise-level applications, ensuring that user roles and access policies are managed efficiently without reinventing the wheel.
 
-### Prerequisites
+## 💻 Tech Stack
 
-- Node.js (https://nodejs.org/)
-- Docker (https://www.docker.com/)
-- NestJS CLI (https://docs.nestjs.com/cli/overview)
+**Backend**
+*   **NestJS** - Progressive Node.js framework for building efficient server-side apps.
+*   **MongoDB** - Flexible, document-based NoSQL database.
+*   **TypeScript** - Strongly typed programming language that builds on JavaScript.
 
-### Installation
+**Frontend**
+*   *API-Only backend intended to be consumed by any client application.*
 
-1. Clone the repository:
+**Tools & Other**
+*   **Docker & Docker Compose** - For containerizing the application and database.
+*   **JWT (JSON Web Tokens)** - For secure, stateless authentication.
+*   **Mongoose** - Elegant MongoDB object modeling for Node.js.
 
-   ```bash
-   git clone https://github.com/amanpreet-dev/nestjs-rbac-starter.git
-   cd nestjs-rbac-starter
-   ```
+## ✨ Key Features
 
-2. Install the dependencies:
+*   **Custom RBAC System**: Granular route protection using custom `@Roles()` decorators and guards.
+*   **Secure Authentication**: Comprehensive sign-up and sign-in functionality with password hashing.
+*   **Stateless Sessions**: Implemented JWT auth from scratch, including robust handling of both access and refresh tokens.
+*   **Active User Extraction**: Custom `@ActiveUser()` decorator for seamless user data retrieval in controllers.
+*   **Dockerized Environment**: Ready-to-use `docker-compose` setup for immediate local development.
+*   **Scalable Architecture**: Clean, modular structure using NestJS best practices.
 
-   ```bash
-   npm install
-   ```
-
-3. Set up environment variables:
-
-   Copy `.env.sample` to `.env` and update the environment variables according to your setup.
-
-4. Start the required services using Docker:
-
-   ```bash
-   docker compose up -d
-   ```
-
-5. Start the NestJS application in Devlopment mode:
-
-   ```bash
-   npm run start:dev
-   ```
-
-6. Access the API at `http://localhost:3000`.
-
-## Project Structure
+## 📂 Folder Structure
 
 ```plaintext
 src/
-├── iam/           # IAM module, contains authentication and authorization logic
-├── users/         # Users module
-├── app.module.ts  # Main application module
-├── main.ts        # Entry point of the application
+├── iam/                  # 🛡️ Identity & Access Management: Auth, Guards, and JWT logic
+│   ├── authentication/   # Sign-in, sign-up, and token generation
+│   ├── authorization/    # Role guards and decorators
+│   └── enums/            # System-wide enumerations (e.g., Role.enum.ts)
+├── users/                # 👥 User Management: Services, controllers, and schemas
+├── app.module.ts         # 📦 Main application module orchestrating everything
+└── main.ts               # 🚀 Entry point of the application
 ```
 
-## Defining & Assigning Roles
+## 🚀 Installation & Setup
 
-Roles and permissions are defined in the `src/users/enums/role.enum.ts` file. Modify this file to add or remove roles as needed.
+Follow these steps to get the project running locally:
 
-Use the `@Roles()` decorator on your route handlers to specify which roles can access a particular route. The AuthGuard will automatically enforce these restrictions.
-For example:
-
-```typescript
-@Roles('admin')
-@Get()
-async findAll(): Promise<User[]> {
-  return this.usersService.findAll();
-}
+**1. Clone the repository**
+```bash
+git clone https://github.com/karandakuadev/nestjs-rbac-starter.git
+cd nestjs-rbac-starter
 ```
 
-You can also use the `@Roles()` decorator to specify multiple roles that can access a route. For example:
-
-```typescript
-@Roles('admin', 'user')
-@Get()
-async findAll(): Promise<User[]> {
-  return this.usersService.findAll();
-}
+**2. Install dependencies**
+```bash
+npm install
 ```
 
-## Accessing the Active User
-
-You can also use the @ActiveUser() decorator to access the current active user object in your route handlers. For example:
-
-```typescript
-@Roles('admin')
-@Get()
-async findAll(@ActiveUser() user: ActiveUserData): Promise<User[]> {
-  console.log('ActiveUser:', user);
-  return this.usersService.findAll();
-}
+**3. Configure environment variables**
+Duplicate the `.env.sample` file and rename it to `.env`. Update the variables with your local configuration if necessary:
+```bash
+cp .env.sample .env
 ```
 
-## API Endpoints
+**4. Start the Docker containers (MongoDB)**
+```bash
+docker compose up -d
+```
 
-### Authentication
+**5. Start the development server**
+```bash
+npm run start:dev
+```
+*The API will now be accessible at `http://localhost:3000`.*
 
-- `POST /auth/sign-up`: To create or register a new user.
-- `POST /auth/sign-in`: Signin and obtain a set of signed JWT Access Token and a Refresh Token.
-- `POST /auth/refresh-tokens`: Refresh the JWT token using the Refresh Token.
+---
 
-### Users
+## 👨‍💻 Author
 
-- `GET /users`: Get a list of users (Admin only).
-- `POST /users`: Create a new user.
-- `GET /users/:id`: Get a user by ID.
-- `PUT /users/:id`: Update a user by ID.
-- `DELETE /users/:id`: Delete a user by ID (Admin only).
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Blog Series
-
-I have documented the entire process of implementing this Role-Based Access Control (RBAC) system in NestJS with MongoDB in a detailed blog series. This series covers everything from the initial setup, defining roles and permissions, securing endpoints, to integrating MongoDB. It's a great resource for understanding the inner workings of this project and for those looking to implement a similar system.
-
-Here are the links to the blog posts:
-
-1. [An introduction on the project and it covers setup, creating resources, and integrating MongoDB.](https://blog.amanpreet.dev/how-to-implement-role-based-access-control-in-nestjs-with-mongodb-part-1)
-2. [Implement password hashing, create sign-in, and sign-up routes.](https://blog.amanpreet.dev/how-to-implement-role-based-access-control-in-nestjs-with-mongodb-part-2)
-3. [Explains how to implement JWT authentication and protect routes with guards.](https://blog.amanpreet.dev/how-to-implement-role-based-access-control-in-nestjs-with-mongodb-part-3)
-4. [Learn how to add public routes and create a custom Active User Decorator.](https://blog.amanpreet.dev/how-to-implement-role-based-access-control-in-nestjs-with-mongodb-part-4)
-5. [Covers how to implement refresh tokens and invalidate tokens.](https://blog.amanpreet.dev/how-to-implement-role-based-access-control-in-nestjs-with-mongodb-part-5)
-6. [Set up roles, permissions, and secure user access.](https://blog.amanpreet.dev/how-to-implement-role-based-access-control-in-nestjs-with-mongodb-part-6)
-
-These posts are intended to provide a comprehensive guide to building a robust RBAC system with NestJS and MongoDB. Whether you're a beginner or an experienced developer, there's something to learn from this series.
-
-Feel free to check out the [blog series](https://blog.amanpreet.dev/series/implement-role-based-access-control-in-nestjs-using-mongodb) and reach out if you have any questions or feedback.
-
-## Future Improvements
-
-To improve this RBAC system and make it more robust and user-friendly. Here are some of the enhancements you can expect in the future:
-
-- **Documentation**: Expanding the documentation to include more examples and best practices.
-- **Testing**: Implementing comprehensive tests to ensure the system's reliability and security.
-
-## Acknowledgments
-
-A special thanks to the NestJS team and their comprehensive courses. This project was greatly influenced by the knowledge and best practices shared through their courses. Their dedication to providing high-quality educational content has made the implementation of this Role-Based Access Control (RBAC) system possible.
-
-- [NestJS Courses](https://courses.nestjs.com/) - For their invaluable courses and resources.
-
-Their tutorials not only helped in understanding the core concepts of NestJS but also in applying these concepts to build a secure and efficient RBAC system using MongoDB.
-
-Additionally, I'd like to thank the broader NestJS community for their support and contributions to the ecosystem, making it a robust framework for developers to build scalable server-side applications.
-
-## Contact
-
-For any questions or inquiries, please contact [Aman](mailto:dalmi.aman@gmail.com).
+**Karan Dakua**
+*   📧 Email: [karan.dakua.dev@gmail.com](mailto:karan.dakua.dev@gmail.com)
+*   🐙 GitHub: [@karandakuadev](https://github.com/karandakuadev)
+*   💼 LinkedIn: [Your LinkedIn Profile](https://linkedin.com/in/your-profile-here) <!-- Add your LinkedIn URL! -->
